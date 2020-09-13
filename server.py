@@ -42,16 +42,16 @@ def start():
     radio_text = removeNonAscii(file.title)
     station_name = removeNonAscii(file.artist)
 
-    # m = subprocess.Popen("./pifmrds -audio " + file_name + " -freq " + freq + " -rt " + radio_text)
+    # m = subprocess.Popen("./pi_fm_adv --audio " + file_name + " --freq " + freq + " --rt " + radio_text)
     # m.wait()
     if pifm_proc and not pifm_proc.poll():
         print("Killing")
         # os.killpg(os.getpgid(pifm_proc.pid), signal.SIGTERM)
-        subprocess.Popen("sudo killall pifmrds", shell=True)
+        subprocess.Popen("sudo killall pi_fm_adv", shell=True)
         print("Killed")
         pifm_proc = None
 
-    cmd = "sox -t mp3 {} -t wav - | sudo ./pifmrds -audio - -freq {} -rt '{}' -ps '{}'".format(file_name, freq, radio_text, station_name) 
+    cmd = "sox -t mp3 {} -t wav - | sudo ./pi_fm_adv --audio - --freq {} --rt '{}' --ps '{}'".format(file_name, freq, radio_text, station_name) 
     print("Cmd: {}".format(cmd))
     pifm_proc = subprocess.Popen(cmd, shell=True, cwd="static/audio", preexec_fn=os.setsid)
 
@@ -75,16 +75,16 @@ def starturl():
     freq = json["freq"]
     radio_text = json["radio_text"]
     # radio_text = "web-rpi-fm"
-    # m = subprocess.Popen("./pifmrds -audio " + file_name + " -freq " + freq + " -rt " + radio_text)
+    # m = subprocess.Popen("./pi_fm_adv --audio " + file_name + " --freq " + freq + " --rt " + radio_text)
     # m.wait()
     if pifm_proc and not pifm_proc.poll():
         print("Killing")
         # os.killpg(os.getpgid(pifm_proc.pid), signal.SIGTERM)
-        subprocess.Popen("sudo killall pifmrds", shell=True)
+        subprocess.Popen("sudo killall pi_fm_adv", shell=True)
         print("Killed")
         pifm_proc = None
 
-    cmd = "sox -t mp3 {} -t wav - | sudo ./pifmrds -audio - -freq {} -rt {}".format(file_name, freq, radio_text) 
+    cmd = "sox -t mp3 {} -t wav - | sudo ./pi_fm_adv --audio - --freq {} --rt {}".format(file_name, freq, radio_text) 
     print("Cmd: {}".format(cmd))
     pifm_proc = subprocess.Popen(cmd, shell=True, preexec_fn=os.setsid)
 
@@ -110,7 +110,7 @@ def stop():
     if pifm_proc and not pifm_proc.poll():
         print("Killing")
         # os.killpg(os.getpgid(pifm_proc.pid), signal.SIGTERM)
-        subprocess.Popen("sudo killall pifmrds", shell=True)
+        subprocess.Popen("sudo killall pi_fm_adv", shell=True)
         print("Killed")
         pifm_proc = None
 
@@ -223,7 +223,7 @@ def delete():
         return jsonify(), 200
 
 if __name__ == "__main__":
-    subprocess.Popen("sudo killall pifmrds", shell=True)
+    subprocess.Popen("sudo killall pi_fm_adv", shell=True)
     app.run(port=9000, host='0.0.0.0')
 
 # p = subprocess.Popen("sox -t mp3 nighoffire.mp3 -t wav - | sudo ./pi_fm_adv --audio - --freq 88", stdout=subprocess.PIPE, shell=True, cwd="static/audio")
